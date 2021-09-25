@@ -1,0 +1,16 @@
+{
+  "background_page": "background.html",
+  "description": "Add a context menu item to search for selected text at Google Maps.",
+  "icons": {
+    "16": "/images/get_started16.png",
+    "48": "/images/get_started48.png"
+  },
+  "minimum_chrome_version": "6",
+  "name": "Google Maps Right Click",
+  "permissions": [
+    "contextMenus",
+    "activeTab"
+  ],
+  "version": "1.0",
+  "manifest_version": 3
+}
