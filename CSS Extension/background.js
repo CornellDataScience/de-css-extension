@@ -19,9 +19,20 @@ chrome.runtime.onInstalled.addListener(function () {
 });
 chrome.contextMenus.onClicked.addListener(getClickHandler);
 
-function getClickHandler(info) {
-  // var searchstring = info.selectionText;
-  // chrome.tabs.create({ url: "http://google.com/maps?q=" + searchstring })
-  //chanve text color of selected
-  chrome.tabs.create({ url: "http://google.com/" })
+function changeTextColor() {
+  sel = document.activeElement;
+  Object.assign(sel, Element).style.color = "red";
+}
+
+function getClickHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
+  });
+
+
+}
+
+function colorElement(id) {
+  var el = document.getElementById(id);
+  el.style.color = "red";
 }
