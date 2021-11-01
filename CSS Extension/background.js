@@ -19,7 +19,25 @@ chrome.runtime.onInstalled.addListener(function () {
 });
 chrome.contextMenus.onClicked.addListener(getClickHandler);
 
+function getSiblings(e) {
+  let siblings = []; 
+
+  if(!e.parentNode) {
+      return siblings;
+  }
+  let sibling  = e.parentNode.firstChild;
+  
+  while (sibling) {
+      if (sibling.nodeType === 1 && sibling !== e) {
+          siblings.push(sibling);
+      }
+      sibling = sibling.nextSibling;
+  }
+  return siblings;
+}
+
 function changeTextColor() {
+  // get container element of selected text 
   var text = "", containerElement = null;
     if (typeof window.getSelection != "undefined") {
         var sel = window.getSelection();
@@ -35,41 +53,72 @@ function changeTextColor() {
         text = textRange.text;
     }
 
-    var str = $("#discussion_container").html();
-    console.log(str)
+    // calculating offset for first parent with id
+    let offset = 0;
+    while (containerElement.id == "") {
+      let containerHtmlString = containerElement.outerHTML;
 
-    /*
-    var txt = this.innerText;
+      offset += containerHtmlString.indexOf(">") - containerHtmlString.indexOf("<") + 1
+
+      // find out position of current child in list
+      siblings_exclusive = getSiblings(containerElement);
+      siblings_inclusive = containerElement.parentElement.children;
+
+      if (siblings_exclusive.length != 0) {
+        index = siblings_exclusive.length-1;
+        for (let i=0;i<siblings_exclusive.length;i++) {
+          if (siblings_exclusive[i].innerHTML != siblings_inclusive[i].innerHTML) {
+            index = i - 1;
+            break;
+          }
+        }
+
+        var test = 0
+        for (let i=0;i<=index;i++) {
+          console.log(siblings_exclusive[i].outerHTML);
+          console.log(siblings_exclusive[i].outerHTML.length);
+          test += siblings_exclusive[i].outerHTML.length;
+          offset += siblings_exclusive[i].outerHTML.length;
+        }
+      } 
+
+      containerElement = containerElement.parentElement;
+    }
+
+    id = containerElement.id;
+
     var selection = window.getSelection();
     var start = selection.anchorOffset;
     var end = selection.focusOffset;
 
-    var startInd = [start];
-    var lastInd = [end];
-    var count = startInd.length;
+    var str = $('#'+id).html();
+    str = str.replaceAll('\n','');
 
-    
-    let pre = str.substring(0, startInd[i]);
-    let post = str.substring(lastInd[i], str.length);
-    let phrase = str.substring(startInd[i], lastInd[i]);
-
-    let nextPhrase;
-
-    if (i < count - 1) {
-      nextPhrase = str.substring(startInd[i + 1], lastInd[i + 1]);
+    uncomment = "";
+    for(let i=0;i<str.length-4;i++) {
+      if (str.substring(i,i+4) == "<!--") {
+        for (let j=i+4; j<str.length-3; j++) {
+          if (str.substring(j,j+3) == "-->") {
+            uncomment = str.substring(0,i) + str.substring(j+3);
+            break;
+          }
+        }
+      }
     }
 
-  str = pre + `<div style='display:inline; color:#ed3833; cursor:pointer;'>${phrase}</div>` + post;
+    str = uncomment;
 
-  if (i < count - 1) {
-    startInd[i + 1] = str.indexOf(nextPhrase, startInd[i + 1]) - 1;
-    lastInd[i + 1] = startInd[i + 1] + nextPhrase.length;
-  }
+    // adding offset to start and end indices of selection
+    var startInd = [start + offset];
+    var lastInd = [end + offset];
 
-  $(containerElement.id).html(str);
-  */
+    let pre = str.substring(0, startInd[0]);
+    let post = str.substring(lastInd[0], str.length);
+    let phrase = str.substring(startInd[0], lastInd[0]);
 
-  //Object.assign(containerElement, Element).style.color = "red";
+  str = pre + `<span style="color:red">${phrase}</span>` + post;
+
+  $('#'+id).html(str);
 
 }
 
