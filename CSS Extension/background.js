@@ -45,6 +45,20 @@ chrome.runtime.onInstalled.addListener(function () {
 //   return containerElement
 // }
 
+function getSiblings (elem) {
+	var siblings = [];
+	var sibling = elem.parentNode.firstChild;
+
+	while (sibling) {
+		if (sibling.nodeType === 1 && sibling !== elem) {
+			siblings.push(sibling);
+		}
+		sibling = sibling.nextSibling
+	}
+
+	return siblings;
+}
+
 function changeTextColor() {
   // get container element of selected text 
   var text = "", containerElement = null;
