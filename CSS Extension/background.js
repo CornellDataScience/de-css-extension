@@ -76,6 +76,8 @@ function changeTextColor() {
     text = textRange.text;
   }
 
+  var originalContainer = containerElement;
+
     // calculating offset for first parent with id
     let offset = 0;
     while (containerElement.id == "") {
@@ -109,6 +111,8 @@ function changeTextColor() {
     var selection = window.getSelection();
     var start = selection.anchorOffset;
     var end = selection.focusOffset;
+
+    offset += originalContainer.innerHTML.indexOf(selection.anchorNode.wholeText);
 
     var str = $('#'+id).html();
     str = str.replaceAll('\n','');
