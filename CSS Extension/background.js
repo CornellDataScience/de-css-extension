@@ -125,7 +125,9 @@ function changeTextColor() {
       }
     }
 
-    str = uncomment;
+    if (uncomment != "") {
+      str = uncomment;
+    }
 
     // adding offset to start and end indices of selection
     var startInd = [start + offset];
