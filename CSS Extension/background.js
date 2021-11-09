@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "TEST",
+    "title": "Change Text Color",
     "type": "normal",
     "contexts": ["selection"],
     "id": "testID"
@@ -59,22 +59,33 @@ function getSiblings (elem) {
 	return siblings;
 }
 
-function changeTextColor() {
-  sel = window.getSelection();
-  if (sel.rangeCount && sel.getRangeAt) {
-    range = sel.getRangeAt(0);
-  }
-  // Set design mode to on
-  document.designMode = "on";
-  if (range) {
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-  // Colorize text
-  document.execCommand("ForeColor", false, "red");
-  // Set design mode to off
-  document.designMode = "off";
+function isColor (strColor) {
+  const s = new Option().style;
+  s.color = strColor;
+  return s.color !== '';
+}
 
+function changeTextColor() {
+  let color = prompt("Choose font color (string or hex are accepted)");
+  if (!isColor(color)) {
+    alert("Invalid text color!");
+  } else {
+    sel = window.getSelection();
+    if (sel.rangeCount && sel.getRangeAt) {
+      range = sel.getRangeAt(0);
+    }
+    // Set design mode to on
+    document.designMode = "on";
+    if (range) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    // Colorize text
+    document.execCommand("ForeColor", false, color);
+    // Set design mode to off
+    document.designMode = "off";
+  }
 }
 
 function getClickHandler() {
