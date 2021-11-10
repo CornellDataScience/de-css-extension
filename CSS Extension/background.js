@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener(function () {
     "title": "Change Text Color",
     "type": "normal",
     "contexts": ["selection"],
-    "id": "testID"
+    "id": "colorID"
   });
 });
 
@@ -18,7 +18,7 @@ chrome.contextMenus.onClicked.addListener(getClickHandler);
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "PAD_ELEMENT",
+    "title": "Pad Element",
     "type": "normal",
     "contexts": ["selection"],
     "id": "padID"
@@ -83,6 +83,7 @@ function changeTextColor() {
 
     // Colorize text
     document.execCommand("ForeColor", false, color);
+
     // Set design mode to off
     document.designMode = "off";
   }
@@ -92,7 +93,6 @@ function getClickHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
   });
-
 
 }
 
