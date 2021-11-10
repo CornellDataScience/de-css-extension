@@ -1,10 +1,3 @@
-let color = '#3aa757';
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ color });
-  console.log('Default background color set to %cgreen', `color: ${color}`);
-});
-
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
     "title": "Change Text Color",
@@ -14,7 +7,7 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-chrome.contextMenus.onClicked.addListener(getClickHandler);
+chrome.contextMenus.onClicked.addListener(getColorHandler);
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
@@ -26,74 +19,54 @@ chrome.runtime.onInstalled.addListener(function () {
 
 });
 
-//Potential function to return the current container element. Produces errors in some case.
-// function getContainerElement() {
-//   var text = "", containerElement = null;
-//   if (typeof window.getSelection != "undefined") {
-//     var sel = window.getSelection();
-//     if (sel.rangeCount) {
-//       var node = sel.getRangeAt(0).commonAncestorContainer;
-//       containerElement = node.nodeType == 1 ? node : node.parentNode;
-//       text = sel.toString();
-//     }
-//   } else if (typeof document.selection != "undefined" &&
-//     document.selection.type != "Control") {
-//     var textRange = document.selection.createRange();
-//     containerElement = textRange.parentElement();
-//     text = textRange.text;
-//   }
-//   return containerElement
-// }
-
-function getSiblings (elem) {
-	var siblings = [];
-	var sibling = elem.parentNode.firstChild;
-
-	while (sibling) {
-		if (sibling.nodeType === 1 && sibling !== elem) {
-			siblings.push(sibling);
-		}
-		sibling = sibling.nextSibling
-	}
-
-	return siblings;
-}
-
-function isColor (strColor) {
-  const s = new Option().style;
-  s.color = strColor;
-  return s.color !== '';
+function selection() {
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+    
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 }
 
 function changeTextColor() {
   let color = prompt("Choose font color (string or hex are accepted)");
-  if (!isColor(color)) {
-    alert("Invalid text color!");
-  } else {
-    sel = window.getSelection();
-    if (sel.rangeCount && sel.getRangeAt) {
-      range = sel.getRangeAt(0);
-    }
-    // Set design mode to on
-    document.designMode = "on";
-    if (range) {
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
+  selection();
 
-    // Colorize text
-    document.execCommand("ForeColor", false, color);
-
-    // Set design mode to off
-    document.designMode = "off";
-  }
+  document.execCommand("ForeColor", false, color);
+  document.designMode = "off";
 }
 
-function getClickHandler() {
+function changeFontName() {
+  let fontName = prompt("Choose font");
+  selection();
+
+  document.execCommand("fontName", false, fontName);
+  document.designMode = "off";
+}
+
+function changeFontSize() {
+  let fontSize = prompt("Choose font size");
+  selection();
+
+  document.execCommand("fontSize", false, fontSize);
+  document.designMode = "off";
+}
+
+function bold() {
+  selection();
+
+  document.execCommand("bold", false, null);
+  document.designMode = "off";
+}
+
+function getColorHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
   });
-
 }
 
 function changePadding(x, paddingtype) {
@@ -168,9 +141,6 @@ for (let i = 0; i <= 100; i += 5) {
   createPaddingSizeOption(i)
 }
 
-
-
-
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
   strVal = info.menuItemId.substring(0, info.menuItemId.length - 5)
   strType = info.menuItemId.substring(info.menuItemId.length - 2, info.menuItemId.length - 3)
@@ -179,7 +149,3 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   getPaddingHandler(parseInt(strVal), strType)
 
 });
-function colorElement(id) {
-  var el = document.getElementById(id);
-  el.style.color = "red";
-}
