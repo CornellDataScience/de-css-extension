@@ -1,9 +1,51 @@
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
+    "title": "Edit Text",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "editID"
+
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
     "title": "Change Text Color",
     "type": "normal",
     "contexts": ["selection"],
-    "id": "colorID"
+    "id": "colorID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Change Font Name",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "fontNameID",
+    "parentId": "editID"
+  });
+});
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Change Text Size",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "fontSizeID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Toggle Bold",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "boldID",
+    "parentId": "editID"
   });
 });
 
@@ -17,6 +59,21 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 
 });
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Print HTML",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "htmlID"
+
+  });
+});
+
+function printHTML() {
+  var fullCode = "<html>" + $("html").html() + "</html>";
+  console.log(fullCode);
+}
 
 function selection() {
   sel = window.getSelection();
@@ -33,38 +90,98 @@ function selection() {
 
 function changeTextColor() {
   let color = prompt("Choose font color (string or hex are accepted)");
-  selection();
+  // selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
 
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
   document.execCommand("ForeColor", false, color);
   document.designMode = "off";
 }
 
 function changeFontName() {
   let fontName = prompt("Choose font");
-  selection();
+  // selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
 
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
   document.execCommand("fontName", false, fontName);
   document.designMode = "off";
 }
 
 function changeFontSize() {
-  let fontSize = prompt("Choose font size");
-  selection();
+  let fontSize = prompt("Choose font size (1-7)");
+  // selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
 
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
   document.execCommand("fontSize", false, fontSize);
   document.designMode = "off";
 }
 
 function bold() {
-  selection();
+  // selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
 
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
   document.execCommand("bold", false, null);
   document.designMode = "off";
+}
+
+function getHTMLHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: printHTML }, () => { });
+  });
 }
 
 function getColorHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
+  });
+}
+
+function getFontNameHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeFontName }, () => { });
+  });
+}
+
+function getFontSizeHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeFontSize }, () => { });
+  });
+}
+
+function getBoldHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: bold }, () => { });
   });
 }
 
@@ -143,7 +260,7 @@ for (let i = 0; i <= 100; i += 5) {
 
 
 
-function moveDivUp() {
+function moveDivOut() {
   containerElement = null;
   if (typeof window.getSelection != "undefined") {
     var sel = window.getSelection();
@@ -158,13 +275,17 @@ function moveDivUp() {
     containerElement = textRange.parentElement();
     text = textRange.text;
   }
+  // console.log(containerElement.nodeName);
+  if (containerElement.nodeName == "FONT") {
+    containerElement = containerElement.parentElement;
+  }
   grandParentElement = containerElement.parentElement.parentElement;
   parentElement = containerElement.parentElement
   if (grandParentElement) {
     console.log(grandParentElement)
     console.log(parentElement)
     grandParentElement.insertBefore(containerElement, grandParentElement.children[Array.prototype.indexOf.call(grandParentElement.children, parentElement)]);
-    // grandParentElement.appendChild(containerElement)
+
   }
 }
 
@@ -213,7 +334,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 function getMoveDivUpHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: moveDivUp }, () => { });
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: moveDivOut }, () => { });
   });
 }
 function getMoveDivDownHandler() {
@@ -223,8 +344,20 @@ function getMoveDivDownHandler() {
 }
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
+  if (info.menuItemId == "htmlID") {
+    getHTMLHandler()
+  }
   if (info.menuItemId == "colorID") {
     getColorHandler()
+  }
+  else if (info.menuItemId == "fontNameID") {
+    getFontNameHandler()
+  }
+  else if (info.menuItemId == "fontSizeID") {
+    getFontSizeHandler()
+  }
+  else if (info.menuItemId == "boldID") {
+    getBoldHandler()
   }
   else if (info.menuItemId == "movedivUpID") {
     getMoveDivUpHandler()
