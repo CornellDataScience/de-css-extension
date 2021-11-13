@@ -1,24 +1,16 @@
-let color = '#3aa757';
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ color });
-  console.log('Default background color set to %cgreen', `color: ${color}`);
-});
-
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "Change Color",
+    "title": "Change Text Color",
     "type": "normal",
     "contexts": ["selection"],
     "id": "colorID"
   });
 });
 
-// chrome.contextMenus.onClicked.addListener(getClickHandler);
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "PAD_ELEMENT",
+    "title": "Pad Element",
     "type": "normal",
     "contexts": ["selection"],
     "id": "padID"
@@ -26,155 +18,51 @@ chrome.runtime.onInstalled.addListener(function () {
 
 });
 
-//Potential function to return the current container element. Produces errors in some case.
-// function getContainerElement() {
-//   var text = "", containerElement = null;
-//   if (typeof window.getSelection != "undefined") {
-//     var sel = window.getSelection();
-//     if (sel.rangeCount) {
-//       var node = sel.getRangeAt(0).commonAncestorContainer;
-//       containerElement = node.nodeType == 1 ? node : node.parentNode;
-//       text = sel.toString();
-//     }
-//   } else if (typeof document.selection != "undefined" &&
-//     document.selection.type != "Control") {
-//     var textRange = document.selection.createRange();
-//     containerElement = textRange.parentElement();
-//     text = textRange.text;
-//   }
-//   return containerElement
-// }
+function selection() {
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
 
-function getSiblings(elem) {
-
-
-  return siblings;
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 }
 
 function changeTextColor() {
-  // get container element of selected text 
-  var text = "", containerElement = null;
-  if (typeof window.getSelection != "undefined") {
-    var sel = window.getSelection();
-    if (sel.rangeCount) {
-      var node = sel.getRangeAt(0).commonAncestorContainer;
-      containerElement = node.nodeType == 1 ? node : node.parentNode;
-      text = sel.toString();
-    }
-  } else if (typeof document.selection != "undefined" &&
-    document.selection.type != "Control") {
-    var textRange = document.selection.createRange();
-    containerElement = textRange.parentElement();
-    text = textRange.text;
-  }
+  let color = prompt("Choose font color (string or hex are accepted)");
+  selection();
 
-  // calculating offset for first parent with id
-  let offset = 0;
-  while (containerElement.id == "") {
-    let containerHtmlString = containerElement.outerHTML;
-
-    offset += containerHtmlString.indexOf(">") - containerHtmlString.indexOf("<") + 1
-
-    // find out position of current child in list
-    var siblings = [];
-    var sibling = containerElement.parentNode.firstChild;
-
-    while (sibling) {
-      if (sibling.nodeType === 1 && sibling !== containerElement) {
-        siblings.push(sibling);
-      }
-      sibling = sibling.nextSibling
-    }
-    siblings_exclusive = siblings
-    siblings_inclusive = containerElement.parentElement.children
-
-    if (siblings_exclusive.length != 0) {
-      index = siblings_exclusive.length - 1;
-      for (let i = 0; i < siblings_exclusive.length; i++) {
-        if (siblings_exclusive[i].innerHTML != siblings_inclusive[i].innerHTML) {
-          index = i - 1;
-          break;
-        }
-      }
-
-      for (let i = 0; i <= index; i++) {
-        offset += siblings_exclusive[i].outerHTML.length;
-      }
-    }
-
-    containerElement = containerElement.parentElement;
-  }
-
-  id = containerElement.id;
-
-  var selection = window.getSelection();
-  var start = selection.anchorOffset;
-  var end = selection.focusOffset;
-  var str = $('#' + id).html();
-  str = str.replaceAll('\n', '');
-
-  uncomment = "";
-  for (let i = 0; i < str.length - 4; i++) {
-    if (str.substring(i, i + 4) == "<!--") {
-      for (let j = i + 4; j < str.length - 3; j++) {
-        if (str.substring(j, j + 3) == "-->") {
-          uncomment = str.substring(0, i) + str.substring(j + 3);
-          break;
-        }
-      }
-    }
-  }
-
-  str = uncomment;
-
-  // adding offset to start and end indices of selection
-  var startInd = [start + offset];
-  var lastInd = [end + offset];
-
-  let pre = str.substring(0, startInd[0]);
-  let post = str.substring(lastInd[0], str.length);
-  let phrase = str.substring(startInd[0], lastInd[0]);
-  str = pre + `<span style="color:red">${phrase}</span>` + post;
-
-  /*
-  var txt = this.innerText;
-  var selection = window.getSelection();
-  var start = selection.anchorOffset;
-  var end = selection.focusOffset;
-
-  var startInd = [start];
-  var lastInd = [end];
-  var count = startInd.length;
-
-  
-  let pre = str.substring(0, startInd[i]);
-  let post = str.substring(lastInd[i], str.length);
-  let phrase = str.substring(startInd[i], lastInd[i]);
-
-  let nextPhrase;
-
-  if (i < count - 1) {
-    nextPhrase = str.substring(startInd[i + 1], lastInd[i + 1]);
-  }
-
-str = pre + `<div style='display:inline; color:#ed3833; cursor:pointer;'>${phrase}</div>` + post;
-
-if (i < count - 1) {
-  startInd[i + 1] = str.indexOf(nextPhrase, startInd[i + 1]) - 1;
-  lastInd[i + 1] = startInd[i + 1] + nextPhrase.length;
+  document.execCommand("ForeColor", false, color);
+  document.designMode = "off";
 }
 
-$(containerElement.id).html(str);
-*/
+function changeFontName() {
+  let fontName = prompt("Choose font");
+  selection();
 
-
-  $('#' + id).html(str);
-
+  document.execCommand("fontName", false, fontName);
+  document.designMode = "off";
 }
 
+function changeFontSize() {
+  let fontSize = prompt("Choose font size");
+  selection();
 
+  document.execCommand("fontSize", false, fontSize);
+  document.designMode = "off";
+}
 
-function getClickHandler() {
+function bold() {
+  selection();
+
+  document.execCommand("bold", false, null);
+  document.designMode = "off";
+}
+
+function getColorHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
   });
@@ -336,7 +224,7 @@ function getMoveDivDownHandler() {
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
   if (info.menuItemId == "colorID") {
-    getClickHandler()
+    getColorHandler()
   }
   else if (info.menuItemId == "movedivUpID") {
     getMoveDivUpHandler()
