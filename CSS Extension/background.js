@@ -219,7 +219,7 @@ function getHTMLHandler() {
 
 function getColorHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: undo }, () => { });
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
   });
 }
 
