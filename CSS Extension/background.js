@@ -49,6 +49,85 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Highlight",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "highlightID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Underline",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "underlineID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Justify Left",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "justifyLeftID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Justify Right",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "justifyRightID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Justify Center",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "justifyCenterID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Delete",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "deleteID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Italicize",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "italicizeID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Undo",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "undoID",
+    "parentId": "editID"
+  });
+});
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
@@ -66,7 +145,6 @@ chrome.runtime.onInstalled.addListener(function () {
     "type": "normal",
     "contexts": ["selection"],
     "id": "htmlID"
-
   });
 });
 
@@ -90,67 +168,31 @@ function selection() {
 
 function changeTextColor() {
   let color = prompt("Choose font color (string or hex are accepted)");
-  // selection();
-  sel = window.getSelection();
-  if (sel.rangeCount && sel.getRangeAt) {
-    range = sel.getRangeAt(0);
-  }
+  selection();
 
-  document.designMode = "on";
-  if (range) {
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
   document.execCommand("ForeColor", false, color);
   document.designMode = "off";
 }
 
 function changeFontName() {
   let fontName = prompt("Choose font");
-  // selection();
-  sel = window.getSelection();
-  if (sel.rangeCount && sel.getRangeAt) {
-    range = sel.getRangeAt(0);
-  }
+  selection();
 
-  document.designMode = "on";
-  if (range) {
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
   document.execCommand("fontName", false, fontName);
   document.designMode = "off";
 }
 
 function changeFontSize() {
   let fontSize = prompt("Choose font size (1-7)");
-  // selection();
-  sel = window.getSelection();
-  if (sel.rangeCount && sel.getRangeAt) {
-    range = sel.getRangeAt(0);
-  }
+  selection();
 
-  document.designMode = "on";
-  if (range) {
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
   document.execCommand("fontSize", false, fontSize);
   document.designMode = "off";
 }
 
 function bold() {
-  // selection();
-  sel = window.getSelection();
-  if (sel.rangeCount && sel.getRangeAt) {
-    range = sel.getRangeAt(0);
-  }
+  selection();
 
-  document.designMode = "on";
-  if (range) {
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
   document.execCommand("bold", false, null);
   document.designMode = "off";
 }
@@ -238,6 +280,54 @@ function getFontSizeHandler() {
 function getBoldHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: bold }, () => { });
+  });
+}
+
+function getHighlightHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: highlight }, () => { });
+  });
+}
+
+function getUnderlineHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: underline }, () => { });
+  });
+}
+
+function getJustifyLeftHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: justifyLeft }, () => { });
+  });
+}
+
+function getJustifyRightHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: justifyRight }, () => { });
+  });
+}
+
+function getJustifyCenterHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: justifyCenter }, () => { });
+  });
+}
+
+function getDeleteHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: deleteText }, () => { });
+  });
+}
+
+function getItalicizeHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: italicize }, () => { });
+  });
+}
+
+function getUndoHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: undo }, () => { });
   });
 }
 
@@ -420,6 +510,30 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   }
   else if (info.menuItemId == "movedivDownID") {
     getMoveDivDownHandler()
+  }
+  else if (info.menuItemId == "highlightID") {
+    getHighlightHandler()
+  }
+  else if (info.menuItemId == "underlineID") {
+    getUnderlineHandler()
+  }
+  else if (info.menuItemId == "justifyLeftID") {
+    getJustifyLeftHandler()
+  }
+  else if (info.menuItemId == "justifyRightID") {
+    getJustifyRightHandler()
+  }
+  else if (info.menuItemId == "justifyCenterID") {
+    getJustifyCenterHandler()
+  }
+  else if (info.menuItemId == "deleteID") {
+    getDeleteHandler()
+  }
+  else if (info.menuItemId == "italicizeID") {
+    getItalicizeHandler()
+  }
+  else if (info.menuItemId == "undoID") {
+    getUndoHandler()
   }
   else {
     strVal = info.menuItemId.substring(0, info.menuItemId.length - 5)
