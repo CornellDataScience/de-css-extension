@@ -7,14 +7,14 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "TEST",
+    "title": "Change Color",
     "type": "normal",
     "contexts": ["selection"],
-    "id": "testID"
+    "id": "colorID"
   });
 });
 
-chrome.contextMenus.onClicked.addListener(getClickHandler);
+// chrome.contextMenus.onClicked.addListener(getClickHandler);
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
@@ -45,18 +45,10 @@ chrome.runtime.onInstalled.addListener(function () {
 //   return containerElement
 // }
 
-function getSiblings (elem) {
-	var siblings = [];
-	var sibling = elem.parentNode.firstChild;
+function getSiblings(elem) {
 
-	while (sibling) {
-		if (sibling.nodeType === 1 && sibling !== elem) {
-			siblings.push(sibling);
-		}
-		sibling = sibling.nextSibling
-	}
 
-	return siblings;
+  return siblings;
 }
 
 function changeTextColor() {
@@ -76,65 +68,72 @@ function changeTextColor() {
     text = textRange.text;
   }
 
-    // calculating offset for first parent with id
-    let offset = 0;
-    while (containerElement.id == "") {
-      let containerHtmlString = containerElement.outerHTML;
+  // calculating offset for first parent with id
+  let offset = 0;
+  while (containerElement.id == "") {
+    let containerHtmlString = containerElement.outerHTML;
 
-      offset += containerHtmlString.indexOf(">") - containerHtmlString.indexOf("<") + 1
+    offset += containerHtmlString.indexOf(">") - containerHtmlString.indexOf("<") + 1
 
-      // find out position of current child in list
-      siblings_exclusive = getSiblings(containerElement);
-      siblings_inclusive = containerElement.parentElement.children;
+    // find out position of current child in list
+    var siblings = [];
+    var sibling = containerElement.parentNode.firstChild;
 
-      if (siblings_exclusive.length != 0) {
-        index = siblings_exclusive.length-1;
-        for (let i=0;i<siblings_exclusive.length;i++) {
-          if (siblings_exclusive[i].innerHTML != siblings_inclusive[i].innerHTML) {
-            index = i - 1;
-            break;
-          }
-        }
-
-        for (let i=0;i<=index;i++) {
-          offset += siblings_exclusive[i].outerHTML.length;
-        }
-      } 
-
-      containerElement = containerElement.parentElement;
+    while (sibling) {
+      if (sibling.nodeType === 1 && sibling !== containerElement) {
+        siblings.push(sibling);
+      }
+      sibling = sibling.nextSibling
     }
+    siblings_exclusive = siblings
+    siblings_inclusive = containerElement.parentElement.children
 
-    id = containerElement.id;
-
-    var selection = window.getSelection();
-    var start = selection.anchorOffset;
-    var end = selection.focusOffset;
-
-    var str = $('#'+id).html();
-    str = str.replaceAll('\n','');
-
-    uncomment = "";
-    for(let i=0;i<str.length-4;i++) {
-      if (str.substring(i,i+4) == "<!--") {
-        for (let j=i+4; j<str.length-3; j++) {
-          if (str.substring(j,j+3) == "-->") {
-            uncomment = str.substring(0,i) + str.substring(j+3);
-            break;
-          }
+    if (siblings_exclusive.length != 0) {
+      index = siblings_exclusive.length - 1;
+      for (let i = 0; i < siblings_exclusive.length; i++) {
+        if (siblings_exclusive[i].innerHTML != siblings_inclusive[i].innerHTML) {
+          index = i - 1;
+          break;
         }
+      }
+
+      for (let i = 0; i <= index; i++) {
+        offset += siblings_exclusive[i].outerHTML.length;
       }
     }
 
-    str = uncomment;
+    containerElement = containerElement.parentElement;
+  }
 
-    // adding offset to start and end indices of selection
-    var startInd = [start + offset];
-    var lastInd = [end + offset];
+  id = containerElement.id;
 
-    let pre = str.substring(0, startInd[0]);
-    let post = str.substring(lastInd[0], str.length);
-    let phrase = str.substring(startInd[0], lastInd[0]);
+  var selection = window.getSelection();
+  var start = selection.anchorOffset;
+  var end = selection.focusOffset;
+  var str = $('#' + id).html();
+  str = str.replaceAll('\n', '');
 
+  uncomment = "";
+  for (let i = 0; i < str.length - 4; i++) {
+    if (str.substring(i, i + 4) == "<!--") {
+      for (let j = i + 4; j < str.length - 3; j++) {
+        if (str.substring(j, j + 3) == "-->") {
+          uncomment = str.substring(0, i) + str.substring(j + 3);
+          break;
+        }
+      }
+    }
+  }
+
+  str = uncomment;
+
+  // adding offset to start and end indices of selection
+  var startInd = [start + offset];
+  var lastInd = [end + offset];
+
+  let pre = str.substring(0, startInd[0]);
+  let post = str.substring(lastInd[0], str.length);
+  let phrase = str.substring(startInd[0], lastInd[0]);
   str = pre + `<span style="color:red">${phrase}</span>` + post;
 
   /*
@@ -168,16 +167,17 @@ if (i < count - 1) {
 $(containerElement.id).html(str);
 */
 
-  $('#'+id).html(str);
+
+  $('#' + id).html(str);
 
 }
+
+
 
 function getClickHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
   });
-
-
 }
 
 function changePadding(x, paddingtype) {
@@ -255,15 +255,100 @@ for (let i = 0; i <= 100; i += 5) {
 
 
 
-chrome.contextMenus.onClicked.addListener(function (info, tab) {
-  strVal = info.menuItemId.substring(0, info.menuItemId.length - 5)
-  strType = info.menuItemId.substring(info.menuItemId.length - 2, info.menuItemId.length - 3)
-  console.log(strVal)
-  console.log(strType)
-  getPaddingHandler(parseInt(strVal), strType)
-
-});
-function colorElement(id) {
-  var el = document.getElementById(id);
-  el.style.color = "red";
+function moveDivUp() {
+  containerElement = null;
+  if (typeof window.getSelection != "undefined") {
+    var sel = window.getSelection();
+    if (sel.rangeCount) {
+      var node = sel.getRangeAt(0).commonAncestorContainer;
+      containerElement = node.nodeType == 1 ? node : node.parentNode;
+      text = sel.toString();
+    }
+  } else if (typeof document.selection != "undefined" &&
+    document.selection.type != "Control") {
+    var textRange = document.selection.createRange();
+    containerElement = textRange.parentElement();
+    text = textRange.text;
+  }
+  grandParentElement = containerElement.parentElement.parentElement;
+  parentElement = containerElement.parentElement
+  if (grandParentElement) {
+    console.log(grandParentElement)
+    console.log(parentElement)
+    grandParentElement.insertBefore(containerElement, grandParentElement.children[Array.prototype.indexOf.call(grandParentElement.children, parentElement)]);
+    // grandParentElement.appendChild(containerElement)
+  }
 }
+
+function moveDivDown() {
+  containerElement = null;
+  if (typeof window.getSelection != "undefined") {
+    var sel = window.getSelection();
+    if (sel.rangeCount) {
+      var node = sel.getRangeAt(0).commonAncestorContainer;
+      containerElement = node.nodeType == 1 ? node : node.parentNode;
+      text = sel.toString();
+    }
+  } else if (typeof document.selection != "undefined" &&
+    document.selection.type != "Control") {
+    var textRange = document.selection.createRange();
+    containerElement = textRange.parentElement();
+    text = textRange.text;
+  }
+  parentElement = containerElement.parentElement
+  if (parentElement) {
+    console.log(parentElement)
+    console.log(containerElement)
+    parentElement.insertBefore(containerElement, parentElement.children[Array.prototype.indexOf.call(parentElement.children, containerElement) + 2]);
+    // grandParentElement.insertBefore(containerElement, grandParentElement.children[Array.prototype.indexOf.call(grandParentElement.children, parentElement)]);
+    // grandParentElement.appendChild(containerElement)
+  }
+}
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "move out",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "movedivUpID"
+  });
+})
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "move down",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "movedivDownID"
+  });
+})
+
+function getMoveDivUpHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: moveDivUp }, () => { });
+  });
+}
+function getMoveDivDownHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: moveDivDown }, () => { });
+  });
+}
+
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+  if (info.menuItemId == "colorID") {
+    getClickHandler()
+  }
+  else if (info.menuItemId == "movedivUpID") {
+    getMoveDivUpHandler()
+  }
+  else if (info.menuItemId == "movedivDownID") {
+    getMoveDivDownHandler()
+  }
+  else {
+    strVal = info.menuItemId.substring(0, info.menuItemId.length - 5)
+    strType = info.menuItemId.substring(info.menuItemId.length - 2, info.menuItemId.length - 3)
+    console.log(strVal)
+    console.log(strType)
+    getPaddingHandler(parseInt(strVal), strType)
+  }
+});
