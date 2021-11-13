@@ -63,9 +63,65 @@ function bold() {
   document.designMode = "off";
 }
 
+function highlight() {
+  selection();
+
+  document.execCommand("hiliteColor", true, "yellow");
+  document.designMode = "off";
+}
+
+function underline() {
+  selection();
+
+  document.execCommand("underline", false, null);
+  document.designMode = "off";
+}
+
+function justifyLeft() {
+  selection();
+
+  document.execCommand("justifyLeft", false, null);
+  document.designMode = "off";
+}
+
+function justifyRight() {
+  selection();
+
+  document.execCommand("justifyRight", false, null);
+  document.designMode = "off";
+}
+
+function justifyCenter() {
+  selection();
+
+  document.execCommand("justifyCenter", false, null);
+  document.designMode = "off";
+}
+
+function deleteText() {
+  selection();
+
+  document.execCommand("delete", false, null);
+  document.designMode = "off";
+}
+
+function italicize() {
+  selection();
+
+  document.execCommand("italic", false, null);
+  document.designMode = "off";
+}
+
+function undo() {
+  selection();
+
+  document.execCommand("undo", false, null);
+  document.designMode = "off";
+}
+
 function getColorHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: changeTextColor }, () => { });
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: undo }, () => { });
   });
 }
 
