@@ -121,10 +121,10 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "Undo",
+    "title": "Replace Text",
     "type": "normal",
     "contexts": ["selection"],
-    "id": "undoID",
+    "id": "replaceID",
     "parentId": "editID"
   });
 });
@@ -138,20 +138,6 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 
 });
-
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.contextMenus.create({
-    "title": "Print HTML",
-    "type": "normal",
-    "contexts": ["selection"],
-    "id": "htmlID"
-  });
-});
-
-function printHTML() {
-  var fullCode = "<html>" + $("html").html() + "</html>";
-  console.log(fullCode);
-}
 
 function selection() {
   sel = window.getSelection();
@@ -246,17 +232,12 @@ function italicize() {
   document.designMode = "off";
 }
 
-function undo() {
+function replaceText() {
+  let text = prompt("Text to replace selection:");
   selection();
 
-  document.execCommand("undo", false, null);
+  document.execCommand("insertText", false, text);
   document.designMode = "off";
-}
-
-function getHTMLHandler() {
-  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: printHTML }, () => { });
-  });
 }
 
 function getColorHandler() {
@@ -325,9 +306,9 @@ function getItalicizeHandler() {
   });
 }
 
-function getUndoHandler() {
+function getReplaceHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: undo }, () => { });
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: replaceText }, () => { });
   });
 }
 
@@ -490,9 +471,6 @@ function getMoveDivDownHandler() {
 }
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-  if (info.menuItemId == "htmlID") {
-    getHTMLHandler()
-  }
   if (info.menuItemId == "colorID") {
     getColorHandler()
   }
@@ -532,8 +510,8 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   else if (info.menuItemId == "italicizeID") {
     getItalicizeHandler()
   }
-  else if (info.menuItemId == "undoID") {
-    getUndoHandler()
+  else if (info.menuItemId == "replaceID") {
+    getReplaceHandler()
   }
   else {
     strVal = info.menuItemId.substring(0, info.menuItemId.length - 5)
