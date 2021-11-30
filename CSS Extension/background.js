@@ -49,24 +49,67 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "Pad Element",
+    "title": "Highlight",
     "type": "normal",
     "contexts": ["selection"],
-    "id": "padID"
+    "id": "highlightID",
+    "parentId": "editID"
   });
-
 });
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "Copy HTML",
+    "title": "Underline",
     "type": "normal",
     "contexts": ["selection"],
-    "id": "copyhtmlID"
+    "id": "underlineID",
+    "parentId": "editID"
+  });
+});
 
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Justify Left",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "justifyLeftID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Justify Right",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "justifyRightID",
+    "parentId": "editID"
+  });
+});
+
+
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Justify Center",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "justifyCenterID",
+    "parentId": "editID"
+  });
+});
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Delete",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "deleteID",
+    "parentId": "editID"
   });
 });
 
@@ -82,6 +125,51 @@ chrome.runtime.onInstalled.addListener(function () {
 
 
 
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Italicize",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "italicizeID",
+    "parentId": "editID"
+  });
+});
+
+
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Replace Text",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "replaceID",
+    "parentId": "editID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Pad Element",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "padID"
+  });
+
+});
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Copy HTML",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "copyhtmlID"
+
+  });
+});
 function copyHTML() {
   var fullCode = document.documentElement.innerHTML;
   console.log(fullCode);
@@ -91,7 +179,6 @@ function copyHTML() {
     alert("Could not copy text: " + err);
   });
 }
-
 // Pretty redundant, as inspecting page makes it very easy to see the html. I think 
 //copy is still useful, as it is much easier than inspecting, highlighting it all, and copying.
 
@@ -157,23 +244,22 @@ function getCSS() {
     alert("Could not copy text: " + err);
   });
 }
-function selection() {
-  sel = window.getSelection();
-  if (sel.rangeCount && sel.getRangeAt) {
-    range = sel.getRangeAt(0);
-  }
+// function selection() {
+//   sel = window.getsel = window.getSelection();
+//   if (sel.rangeCount && sel.getRangeAt) {
+//     range = sel.getRangeAt(0);
+//   }
 
-  document.designMode = "on";
-  if (range) {
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-}
+//   document.designMode = "on";
+//   if (range) {
+//     sel.removeAllRanges();
+//     sel.addRange(range);
+//   }
+// }
 
 function changeTextColor() {
   let color = prompt("Choose font color (string or hex are accepted)");
-  // selection();
-  sel = window.getSelection();
+  sel = window.getsel = window.getSelection();
   if (sel.rangeCount && sel.getRangeAt) {
     range = sel.getRangeAt(0);
   }
@@ -183,14 +269,23 @@ function changeTextColor() {
     sel.removeAllRanges();
     sel.addRange(range);
   }
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   document.execCommand("ForeColor", false, color);
   document.designMode = "off";
 }
 
 function changeFontName() {
   let fontName = prompt("Choose font");
-  // selection();
-  sel = window.getSelection();
+  sel = window.getsel = window.getSelection();
   if (sel.rangeCount && sel.getRangeAt) {
     range = sel.getRangeAt(0);
   }
@@ -200,14 +295,23 @@ function changeFontName() {
     sel.removeAllRanges();
     sel.addRange(range);
   }
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   document.execCommand("fontName", false, fontName);
   document.designMode = "off";
 }
 
 function changeFontSize() {
   let fontSize = prompt("Choose font size (1-7)");
-  // selection();
-  sel = window.getSelection();
+  sel = window.getsel = window.getSelection();
   if (sel.rangeCount && sel.getRangeAt) {
     range = sel.getRangeAt(0);
   }
@@ -217,13 +321,22 @@ function changeFontSize() {
     sel.removeAllRanges();
     sel.addRange(range);
   }
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   document.execCommand("fontSize", false, fontSize);
   document.designMode = "off";
 }
 
 function bold() {
-  // selection();
-  sel = window.getSelection();
+  sel = window.getsel = window.getSelection();
   if (sel.rangeCount && sel.getRangeAt) {
     range = sel.getRangeAt(0);
   }
@@ -233,63 +346,164 @@ function bold() {
     sel.removeAllRanges();
     sel.addRange(range);
   }
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   document.execCommand("bold", false, null);
   document.designMode = "off";
 }
 
 function highlight() {
-  selection();
+  sel = window.getsel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
   document.execCommand("hiliteColor", true, "yellow");
   document.designMode = "off";
 }
 
 function underline() {
-  selection();
+  sel = window.getsel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
   document.execCommand("underline", false, null);
   document.designMode = "off";
 }
 
 function justifyLeft() {
-  selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
   document.execCommand("justifyLeft", false, null);
   document.designMode = "off";
 }
 
 function justifyRight() {
-  selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
   document.execCommand("justifyRight", false, null);
   document.designMode = "off";
 }
 
 function justifyCenter() {
-  selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
   document.execCommand("justifyCenter", false, null);
   document.designMode = "off";
 }
 
 function deleteText() {
-  selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
   document.execCommand("delete", false, null);
   document.designMode = "off";
 }
 
 function italicize() {
-  selection();
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
+
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
   document.execCommand("italic", false, null);
   document.designMode = "off";
 }
 
-function undo() {
-  selection();
+function replaceText() {
+  let text = prompt("Text to replace selection:");
+  sel = window.getSelection();
+  if (sel.rangeCount && sel.getRangeAt) {
+    range = sel.getRangeAt(0);
+  }
 
-  document.execCommand("undo", false, null);
+  document.designMode = "on";
+  if (range) {
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  document.execCommand("insertText", false, text);
   document.designMode = "off";
 }
 
@@ -331,10 +545,67 @@ function getBoldHandler() {
   });
 }
 
+function getHighlightHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: highlight }, () => { });
+  });
+}
+
+function getUnderlineHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: underline }, () => { });
+  });
+}
+
+function getJustifyLeftHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: justifyLeft }, () => { });
+  });
+}
+
+function getJustifyRightHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: justifyRight }, () => { });
+  });
+}
+
+function getJustifyCenterHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: justifyCenter }, () => { });
+  });
+}
+
+function getDeleteHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: deleteText }, () => { });
+  });
+}
+
+function getItalicizeHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: italicize }, () => { });
+  });
+}
+
+function getReplaceHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: replaceText }, () => { });
+  });
+}
+
 function changePadding(x, paddingtype) {
   var text = "", containerElement = null;
   if (typeof window.getSelection != "undefined") {
-    var sel = window.getSelection();
+    var sel = window.getsel = window.getSelection();
+    if (sel.rangeCount && sel.getRangeAt) {
+      range = sel.getRangeAt(0);
+    }
+
+    document.designMode = "on";
+    if (range) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
     if (sel.rangeCount) {
       var node = sel.getRangeAt(0).commonAncestorContainer;
       containerElement = node.nodeType == 1 ? node : node.parentNode;
@@ -409,7 +680,16 @@ for (let i = 0; i <= 100; i += 5) {
 function moveDivOut() {
   containerElement = null;
   if (typeof window.getSelection != "undefined") {
-    var sel = window.getSelection();
+    var sel = window.getsel = window.getSelection();
+    if (sel.rangeCount && sel.getRangeAt) {
+      range = sel.getRangeAt(0);
+    }
+
+    document.designMode = "on";
+    if (range) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
     if (sel.rangeCount) {
       var node = sel.getRangeAt(0).commonAncestorContainer;
       containerElement = node.nodeType == 1 ? node : node.parentNode;
@@ -438,7 +718,16 @@ function moveDivOut() {
 function moveDivDown() {
   containerElement = null;
   if (typeof window.getSelection != "undefined") {
-    var sel = window.getSelection();
+    var sel = window.getsel = window.getSelection();
+    if (sel.rangeCount && sel.getRangeAt) {
+      range = sel.getRangeAt(0);
+    }
+
+    document.designMode = "on";
+    if (range) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
     if (sel.rangeCount) {
       var node = sel.getRangeAt(0).commonAncestorContainer;
       containerElement = node.nodeType == 1 ? node : node.parentNode;
@@ -513,6 +802,30 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
   }
   else if (info.menuItemId == "movedivDownID") {
     getMoveDivDownHandler()
+  }
+  else if (info.menuItemId == "highlightID") {
+    getHighlightHandler()
+  }
+  else if (info.menuItemId == "underlineID") {
+    getUnderlineHandler()
+  }
+  else if (info.menuItemId == "justifyLeftID") {
+    getJustifyLeftHandler()
+  }
+  else if (info.menuItemId == "justifyRightID") {
+    getJustifyRightHandler()
+  }
+  else if (info.menuItemId == "justifyCenterID") {
+    getJustifyCenterHandler()
+  }
+  else if (info.menuItemId == "deleteID") {
+    getDeleteHandler()
+  }
+  else if (info.menuItemId == "italicizeID") {
+    getItalicizeHandler()
+  }
+  else if (info.menuItemId == "replaceID") {
+    getReplaceHandler()
   }
   else {
     strVal = info.menuItemId.substring(0, info.menuItemId.length - 5)
