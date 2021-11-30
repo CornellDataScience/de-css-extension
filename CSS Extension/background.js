@@ -62,19 +62,101 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "Print HTML",
+    "title": "Copy HTML",
     "type": "normal",
     "contexts": ["selection"],
-    "id": "htmlID"
+    "id": "copyhtmlID"
 
   });
 });
 
-function printHTML() {
-  var fullCode = "<html>" + $("html").html() + "</html>";
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Copy CSS",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "getCSSID"
+
+  });
+});
+
+
+
+function copyHTML() {
+  var fullCode = document.documentElement.innerHTML;
   console.log(fullCode);
+  navigator.clipboard.writeText(fullCode).then(function () {
+    alert('Copied to clipboard!');
+  }, function (err) {
+    alert("Could not copy text: " + err);
+  });
 }
 
+// Pretty redundant, as inspecting page makes it very easy to see the html. I think 
+//copy is still useful, as it is much easier than inspecting, highlighting it all, and copying.
+
+// function showHTML() {
+//   var fullCode = document.documentElement.innerHTML;
+//   var tab = window.open('about:blank', '_blank');
+//   tab.document.body.innerHTML = fullCode.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+//   // tab.document.write(fullCode); // where 'html' is a variable containing your HTML
+//   tab.document.close();
+// }
+// var originalcss = '';
+// function getOriginalCSS() {
+
+
+//   var elems = document.body.getElementsByTagName("*");
+//   for (var l = 0; l < elems.length; l++) {
+//     containerElement = elems.item(l);
+//     var o = getComputedStyle(containerElement);
+//     for (var k = 0; k < o.length; k++) {
+//       originalcss += o[k] + ':' + o.getPropertyValue(o[k]) + ';';
+//     }
+//   }
+//   console.log(originalcss)
+
+
+// }
+// chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+//   if (changeInfo.status == 'complete') {
+//     chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+//       chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: getOriginalCSS }, () => { });
+//     });
+//   }
+
+// })
+
+function getCSS() {
+  var elems = document.body.getElementsByTagName("*");
+  var s = '';
+  for (var l = 0; l < elems.length; l++) {
+    containerElement = elems.item(l);
+    var o = getComputedStyle(containerElement);
+    for (var k = 0; k < o.length; k++) {
+      s += o[k] + ':' + o.getPropertyValue(o[k]) + ';';
+    }
+  }
+
+
+  // var i = 0;
+  // var j = 0;
+  // var result = "";
+
+  // while (j < s.length) {
+  //   if (originalcss[i] != s[j] || i == originalcss.length)
+  //     result += s[j];
+  //   else
+  //     i++;
+  //   j++;
+  // }
+  console.log(s);
+  navigator.clipboard.writeText(s).then(function () {
+    alert('Copied to clipboard!');
+  }, function (err) {
+    alert("Could not copy text: " + err);
+  });
+}
 function selection() {
   sel = window.getSelection();
   if (sel.rangeCount && sel.getRangeAt) {
@@ -211,11 +293,19 @@ function undo() {
   document.designMode = "off";
 }
 
-function getHTMLHandler() {
+function getCopyHTMLHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: printHTML }, () => { });
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: copyHTML }, () => { });
   });
 }
+
+
+function getCSSHandler() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    chrome.scripting.executeScript({ target: { tabId: tabs[0].id }, func: getCSS }, () => { });
+  });
+}
+
 
 function getColorHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
@@ -400,10 +490,13 @@ function getMoveDivDownHandler() {
 }
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-  if (info.menuItemId == "htmlID") {
-    getHTMLHandler()
+  if (info.menuItemId == "copyhtmlID") {
+    getCopyHTMLHandler()
   }
-  if (info.menuItemId == "colorID") {
+  else if (info.menuItemId == "getCSSID") {
+    getCSSHandler()
+  }
+  else if (info.menuItemId == "colorID") {
     getColorHandler()
   }
   else if (info.menuItemId == "fontNameID") {
