@@ -1,3 +1,16 @@
-div {
-    background: red;
+h1 {
+  text-align: center;
+}
+
+body {
+  padding-right: 80px;
+  padding-bottom: 50px;
+  padding-left: 80px;
+}
+
+#nestlist1,
+#nestlist2,
+#nestlist3,
+#nestlist4 {
+  padding-left: 65px;
 }

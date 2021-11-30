@@ -28,7 +28,6 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
     "title": "Change Text Size",
@@ -89,9 +88,6 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-
-
-
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
     "title": "Justify Center",
@@ -101,7 +97,6 @@ chrome.runtime.onInstalled.addListener(function () {
     "parentId": "editID"
   });
 });
-
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
@@ -123,10 +118,6 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-
-
-
-
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
     "title": "Italicize",
@@ -136,9 +127,6 @@ chrome.runtime.onInstalled.addListener(function () {
     "parentId": "editID"
   });
 });
-
-
-
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
@@ -157,9 +145,7 @@ chrome.runtime.onInstalled.addListener(function () {
     "contexts": ["selection"],
     "id": "padID"
   });
-
 });
-
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
@@ -167,9 +153,9 @@ chrome.runtime.onInstalled.addListener(function () {
     "type": "normal",
     "contexts": ["selection"],
     "id": "copyhtmlID"
-
   });
 });
+
 function copyHTML() {
   var fullCode = document.documentElement.innerHTML;
   console.log(fullCode);
@@ -751,7 +737,7 @@ function moveDivDown() {
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "move out",
+    "title": "Move out",
     "type": "normal",
     "contexts": ["selection"],
     "id": "movedivUpID"
@@ -760,7 +746,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    "title": "move down",
+    "title": "Move down",
     "type": "normal",
     "contexts": ["selection"],
     "id": "movedivDownID"
