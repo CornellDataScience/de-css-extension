@@ -201,15 +201,38 @@ function copyHTML() {
 // })
 
 function getCSS() {
-  var elems = document.body.getElementsByTagName("*");
-  var s = '';
-  for (var l = 0; l < elems.length; l++) {
-    containerElement = elems.item(l);
-    var o = getComputedStyle(containerElement);
-    for (var k = 0; k < o.length; k++) {
-      s += o[k] + ':' + o.getPropertyValue(o[k]) + ';';
+  containerElement = null;
+  if (typeof window.getSelection != "undefined") {
+    var sel = window.getsel = window.getSelection();
+    if (sel.rangeCount && sel.getRangeAt) {
+      range = sel.getRangeAt(0);
     }
+
+    document.designMode = "on";
+    if (range) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    if (sel.rangeCount) {
+      var node = sel.getRangeAt(0).commonAncestorContainer;
+      containerElement = node.nodeType == 1 ? node : node.parentNode;
+      text = sel.toString();
+    }
+  } else if (typeof document.selection != "undefined" &&
+    document.selection.type != "Control") {
+    var textRange = document.selection.createRange();
+    containerElement = textRange.parentElement();
+    text = textRange.text;
   }
+
+  var s = '';
+
+
+  var o = getComputedStyle(containerElement);
+  for (var k = 0; k < o.length; k++) {
+    s += o[k] + ':' + o.getPropertyValue(o[k]) + ';';
+  }
+
 
 
   // var i = 0;
