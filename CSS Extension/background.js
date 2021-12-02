@@ -108,15 +108,7 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.contextMenus.create({
-    "title": "Copy CSS",
-    "type": "normal",
-    "contexts": ["selection"],
-    "id": "getCSSID"
 
-  });
-});
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
@@ -149,10 +141,39 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
+    "title": "Move out",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "movedivUpID"
+  });
+})
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Move down",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "movedivDownID"
+  });
+})
+
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
     "title": "Copy HTML",
     "type": "normal",
     "contexts": ["selection"],
     "id": "copyhtmlID"
+  });
+});
+
+chrome.runtime.onInstalled.addListener(function () {
+  chrome.contextMenus.create({
+    "title": "Copy CSS",
+    "type": "normal",
+    "contexts": ["selection"],
+    "id": "getCSSID"
+
   });
 });
 
@@ -758,23 +779,7 @@ function moveDivDown() {
   }
 }
 
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.contextMenus.create({
-    "title": "Move out",
-    "type": "normal",
-    "contexts": ["selection"],
-    "id": "movedivUpID"
-  });
-})
 
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.contextMenus.create({
-    "title": "Move down",
-    "type": "normal",
-    "contexts": ["selection"],
-    "id": "movedivDownID"
-  });
-})
 
 function getMoveDivUpHandler() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
